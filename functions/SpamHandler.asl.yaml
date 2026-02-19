@@ -1,0 +1,45 @@
+Comment: A description of my state machine
+StartAt: Pass
+States:
+  Pass:
+    Type: Pass
+    Next: InContactList?
+  InContactList?:
+    Type: Choice
+    Choices:
+      - Next: Check message content
+        Condition: '{% ($inContactList) = (false) %}'
+      - Next: Add to known folder
+        Condition: '{% ($inContactList) = (true) %}'
+    Default: DefaultState
+  Check message content:
+    Type: Pass
+    Next: IsSpam?
+  IsSpam?:
+    Type: Choice
+    Choices:
+      - Next: Delete Message
+        Condition: '{% ($isSpam) = (true) %}'
+      - Next: Review Message
+        Condition: '{% ($isSpam) = (false) %}'
+    Default: DefaultChoice
+  Delete Message:
+    Type: Pass
+    End: true
+  DefaultChoice:
+    Type: Pass
+    End: true
+  DefaultState:
+    Type: Pass
+    End: true
+  Add to known folder:
+    Type: Pass
+    End: true
+  Review Message:
+    Type: Pass
+    Next: Wait review
+  Wait review:
+    Type: Wait
+    Seconds: 5
+    End: true
+QueryLanguage: JSONata
